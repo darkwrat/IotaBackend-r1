@@ -3,11 +3,15 @@ package ru.cdecl.pub.iota.main;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.hk2.api.Immediate;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import ru.cdecl.pub.iota.servlets.ConcreteUserServlet;
 import ru.cdecl.pub.iota.servlets.SessionServlet;
 import ru.cdecl.pub.iota.servlets.UserServlet;
+
+import javax.sql.DataSource;
 
 public class Main {
 
@@ -26,6 +30,12 @@ public class Main {
         }
 
         final ServiceLocator serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+        ServiceLocatorUtilities.bind(serviceLocator, new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bindFactory(DataSourceFactory.class).to(DataSource.class).in(Immediate.class);
+            }
+        });
         ServiceLocatorUtilities.enableImmediateScope(serviceLocator);
 
         final Server server = new Server(port);
