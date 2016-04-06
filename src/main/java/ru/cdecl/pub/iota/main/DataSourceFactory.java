@@ -32,7 +32,6 @@ public class DataSourceFactory implements Factory<DataSource> {
 
         dataSource.setDatabaseName(DB_NAME);
         dataSource.setUser(USER_ID);
-        dataSource.setPassword(PASSWORD);
 
         return FiberDataSource.wrap(dataSource);
     }
